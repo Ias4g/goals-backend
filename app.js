@@ -1,7 +1,21 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
+
+require('./models/Goals')
+const Goal = mongoose.model('Goal')
 
 const app = express()
+
+app.use(express.json())
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type, Authorization")
+    app.use(cors())
+    next()
+})
 
 mongoose.connect('mongodb+srv://imersao5:goals@emunah.7fd8c.mongodb.net/imersao5?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -13,8 +27,31 @@ mongoose.connect('mongodb+srv://imersao5:goals@emunah.7fd8c.mongodb.net/imersao5
 })
 
 app.get('/goals', async (req, res) => {
+    await Goal.find({}).then((goals) => {
+        return res.json({
+            error: false,
+            goals
+        })
+    }).catch((err) => {
+        return res.status(400).json({
+            error: true,
+            message: 'Data not found!'
+        })
+    })
+
+})
+
+app.post('/goals', async (req, res) => {
+    await Goal.create(req.body, (err) => {
+        if (err) return res.status(400).json({
+            error: true,
+            message: 'Error persisting data, please try again later.'
+        })
+    })
+
     return res.json({
-        message: 'Aprendendo a desenvolver APIs com NodeJS'
+        error: false,
+        message: 'Data successfully saved!'
     })
 })
 
