@@ -42,6 +42,14 @@ app.get('/goals', async (req, res) => {
 })
 
 app.post('/goals', async (req, res) => {
+    await sleep(300)
+
+    function sleep(ms) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, ms)
+        })
+    }
+
     await Goal.create(req.body, (err) => {
         if (err) return res.status(400).json({
             error: true,
@@ -55,6 +63,6 @@ app.post('/goals', async (req, res) => {
     })
 })
 
-app.listen(3000, () => {
-    console.log("Server running on address: http://localhost:3000")
+app.listen(3333, () => {
+    console.log("Server running on address: http://localhost:3333")
 })
