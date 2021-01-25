@@ -9,7 +9,7 @@ const goal = new Schema({
     description: {
         type: String
     },
-    Status: {
+    status: {
         type: String
     }
 }, {
